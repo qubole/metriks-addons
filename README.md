@@ -1,5 +1,7 @@
 # Metriks reporter for OpenTSDB
 
+[![Build Status](https://travis-ci.org/vrajat/metriks-opentsdb.svg)](https://travis-ci.org/vrajat/metriks-opentsdb)
+
 This is the [metriks](https://github.com/eric/metriks) reporter for OpenTSDB Metrics.
 It is heavily inspired from
 [Librato Reporter] (https://github.com/eric/metriks-librato_metrics)
