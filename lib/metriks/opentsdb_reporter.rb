@@ -82,7 +82,7 @@ module Metriks
           length = @batch_size
         end
 
-        RestClient.post "#{@hostname}:#{@port}",
+        RestClient.post "#{@hostname}:#{@port}/api/put",
           datapoints[index, length].to_json,
           :content_type => :json, :accept => :json
         index += length

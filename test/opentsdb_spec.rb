@@ -148,7 +148,7 @@ describe "Rest Client" do
       'http://localhost', 4242,
       {:env => "test"},
       { :registry => @registry, :batch_size => 3 })
-    stub_request(:post, "http://localhost:4242").
+    stub_request(:post, "http://localhost:4242/api/put").
       with(:body => /^\[.*\]$/).
       to_return(:status => 200, :body => "", :headers => {})
   end
@@ -163,7 +163,7 @@ describe "Rest Client" do
       :value => 1,
       :tags => { :env => "test"}}
     ]
-    expect(a_request(:post, "http://localhost:4242/")).to have_been_made
+    expect(a_request(:post, "http://localhost:4242/api/put")).to have_been_made
   end
 
   it "Send a three metric" do
@@ -171,7 +171,7 @@ describe "Rest Client" do
       @registry.counter("counter.testing.#{i}").increment
     end
     @reporter.submit @reporter.get_datapoints
-    expect(a_request(:post, "http://localhost:4242/")).to have_been_made
+    expect(a_request(:post, "http://localhost:4242/api/put")).to have_been_made
   end
 
   it "Send a four metric" do
@@ -179,7 +179,7 @@ describe "Rest Client" do
       @registry.counter("counter.testing.#{i}").increment
     end
     @reporter.submit @reporter.get_datapoints
-    expect(a_request(:post, "http://localhost:4242/")).to have_been_made.times(2)
+    expect(a_request(:post, "http://localhost:4242/api/put")).to have_been_made.times(2)
   end
 
   it "Send a five metric" do
@@ -187,7 +187,7 @@ describe "Rest Client" do
       @registry.counter("counter.testing.#{i}").increment
     end
     @reporter.submit @reporter.get_datapoints
-    expect(a_request(:post, "http://localhost:4242/")).to have_been_made.times(2)
+    expect(a_request(:post, "http://localhost:4242/api/put")).to have_been_made.times(2)
   end
 
   it "Send a six metric" do
@@ -195,7 +195,7 @@ describe "Rest Client" do
       @registry.counter("counter.testing.#{i}").increment
     end
     @reporter.submit @reporter.get_datapoints
-    expect(a_request(:post, "http://localhost:4242/")).to have_been_made.times(2)
+    expect(a_request(:post, "http://localhost:4242/api/put")).to have_been_made.times(2)
   end
 
   it "Send a seven metric" do
@@ -203,6 +203,6 @@ describe "Rest Client" do
       @registry.counter("counter.testing.#{i}").increment
     end
     @reporter.submit @reporter.get_datapoints
-    expect(a_request(:post, "http://localhost:4242/")).to have_been_made.times(3)
+    expect(a_request(:post, "http://localhost:4242/api/put")).to have_been_made.times(3)
   end
 end
