@@ -1,6 +1,8 @@
 require 'rubygems'
 require 'rake'
 require 'date'
+require 'rspec/core/rake_task'
+require 'rspec'
 
 #############################################################################
 #
@@ -43,13 +45,11 @@ end
 #
 #############################################################################
 
-task :default => :test
+task :default => :spec
 
-require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/*_test.rb'
-  test.verbose = true
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.pattern = Dir.glob('spec/**/*_spec.rb')
+  t.rspec_opts = '--format documentation --color'
 end
 
 desc "Generate RCov test coverage and open in your browser"
