@@ -2,5 +2,5 @@ source 'https://rubygems.org'
 
 gemspec
 group :test do
-  rake
+  gem "rake"
 end
