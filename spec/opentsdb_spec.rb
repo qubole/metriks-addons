@@ -10,7 +10,7 @@ describe "Smoke test" do
   before(:each) do
     @registry = Metriks::Registry.new
     @reporter = Metriks::OpenTSDBReporter.new(
-      'http://localhost/', 4242,
+      'http://localhost:4242',
       {:env => "test"},
       { :registry => @registry })
   end
@@ -145,7 +145,7 @@ describe "Rest Client" do
   before(:each) do
     @registry = Metriks::Registry.new
     @reporter = Metriks::OpenTSDBReporter.new(
-      'http://localhost', 4242,
+      'http://localhost:4242',
       {:env => "test"},
       { :registry => @registry, :batch_size => 3 })
     stub_request(:post, "http://localhost:4242/api/put").

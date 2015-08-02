@@ -3,11 +3,10 @@ require 'rest-client'
 
 module Metriks
   class OpenTSDBReporter
-    attr_accessor :prefix, :source, :data, :hostname, :port, :tags
+    attr_accessor :prefix, :source, :data, :hostname, :tags
 
-    def initialize(h, p, t, options = {})
+    def initialize(h, t, options = {})
       @hostname = h
-      @port = p
       @tags = t
 
       @prefix = options[:prefix]
@@ -82,7 +81,7 @@ module Metriks
           length = @batch_size
         end
 
-        RestClient.post "#{@hostname}:#{@port}/api/put",
+        RestClient.post "#{@hostname}/api/put",
           datapoints[index, length].to_json,
           :content_type => :json, :accept => :json
         index += length
