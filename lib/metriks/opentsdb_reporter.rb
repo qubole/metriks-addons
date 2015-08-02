@@ -75,6 +75,7 @@ module Metriks
       rescue Exception => ex
         if !@logger.nil?
           @logger.error(ex.message)
+          @logger.error(ex.stacktrace)
         end
         @on_error[ex] rescue nil
       end

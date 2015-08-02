@@ -147,7 +147,7 @@ describe "Rest Client" do
     @reporter = Metriks::OpenTSDBReporter.new(
       'http://localhost:4242',
       {:env => "test"},
-      { :registry => @registry, :batch_size => 3 })
+      { :registry => @registry})
     stub_request(:post, "http://localhost:4242/api/put").
       with(:body => /^\[.*\]$/).
       to_return(:status => 200, :body => "", :headers => {})
@@ -183,7 +183,7 @@ describe "Rest Client" do
   end
 
   it "Send a five metric" do
-    for i in 0..4 do
+    for i in 0..24 do
       @registry.counter("counter.testing.#{i}").increment
     end
     @reporter.submit @reporter.get_datapoints
