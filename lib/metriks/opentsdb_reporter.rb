@@ -12,6 +12,7 @@ module Metriks
       @prefix = options[:prefix]
       @source = options[:source]
 
+      @logger       = options[:logger] || nil
       @batch_size   = options[:batch_size] || 50
       @registry     = options[:registry] || Metriks::Registry.default
       @interval     = options[:interval] || 60
@@ -26,6 +27,12 @@ module Metriks
 
       @mutex = Mutex.new
       @running = false
+    end
+
+    def info(msg)
+      if !@logger.nil?
+        @logger.info(msg)
+      end
     end
 
     def start
@@ -62,9 +69,13 @@ module Metriks
     def flush
       begin
         @mutex.synchronize do
+          info("Flushing metrics")
           submit get_datapoints
         end
       rescue Exception => ex
+        if !@logger.nil?
+          @logger.error(ex.message)
+        end
         @on_error[ex] rescue nil
       end
     end
@@ -193,6 +204,7 @@ module Metriks
           end
         end
       end
+      info("Captured #{datapoints.size} metrics")
       datapoints
     end
   end
