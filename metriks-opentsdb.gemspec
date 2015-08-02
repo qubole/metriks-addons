@@ -69,7 +69,7 @@ Gem::Specification.new do |s|
   # = MANIFEST =
 
   s.add_dependency "metriks", '~> 0.9.9.7', '>= 0.9.9.7'
-  s.add_dependency "rest-client", '~> 1.8.0'
+  s.add_dependency "rest-client", '>= 1.6.7'
   ## Test files will be grabbed from the file list. Make sure the path glob
   ## matches what you actually use.
   s.test_files = s.files.select { |path| path =~ /^test\/.*_test\.rb/ }
