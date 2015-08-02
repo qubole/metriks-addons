@@ -87,15 +87,19 @@ module Metriks
       index = 0
       length = @batch_size
       while index < datapoints.size
+        info("Starting from #{index}")
         if datapoints.size < (index + length)
           length = datapoints.size - index
         else
           length = @batch_size
         end
-
+        info("Length is #{length}")
+        info("Begin post")
+        jsonstr = datapoints[index, length].to_json
         RestClient.post "#{@hostname}/api/put",
-          datapoints[index, length].to_json,
+          jsonstr,
           :content_type => :json, :accept => :json
+        info("Put done")
         index += length
       end
     end
