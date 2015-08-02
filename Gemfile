@@ -7,5 +7,6 @@ group :test do
   gem "webmock"
 end
 
+gem "mime-types" '~> 1.25.1'
 gem "rest-client"
 gem "metriks"
