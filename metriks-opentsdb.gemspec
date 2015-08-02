@@ -64,7 +64,7 @@ Gem::Specification.new do |s|
     lib/metriks-opentsdb.rb
     lib/metriks/opentsdb_reporter.rb
     metriks-opentsdb.gemspec
-    test/opentsdb_spec.rb
+    spec/opentsdb_spec.rb
   ]
   # = MANIFEST =
 
