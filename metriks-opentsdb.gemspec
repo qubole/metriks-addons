@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   ## the sub! line in the Rakefile
   s.name              = 'metriks-opentsdb'
   s.version           = '1.0.0'
-  s.date              = '2015-03-13'
+  s.date              = '2015-08-02'
 
   ## Make sure your summary is short. The description may be as long
   ## as you like.
@@ -46,7 +46,8 @@ Gem::Specification.new do |s|
 
   ## List your runtime dependencies here. Runtime dependencies are those
   ## that are needed for an end user to actually USE your code.
-  s.add_dependency('metriks', '>= 0.9.9.6')
+  s.add_runtime_dependency 'metriks', '~> 0.9', '>= 0.9.9.7'
+  s.add_runtime_dependency 'rest-client', '>= 1.6.7'
 
   ## List your development dependencies here. Development dependencies are
   ## those that are only needed during development
@@ -68,8 +69,6 @@ Gem::Specification.new do |s|
   ]
   # = MANIFEST =
 
-  s.add_dependency "metriks", '~> 0.9.9.7', '>= 0.9.9.7'
-  s.add_dependency "rest-client", '>= 1.6.7'
   ## Test files will be grabbed from the file list. Make sure the path glob
   ## matches what you actually use.
   s.test_files = s.files.select { |path| path =~ /^test\/.*_test\.rb/ }

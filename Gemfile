@@ -8,4 +8,3 @@ group :test do
 end
 
 gem "rest-client"
-gem "metriks"
