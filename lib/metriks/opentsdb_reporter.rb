@@ -100,6 +100,7 @@ module Metriks
         info("To Json")
         jsonstr = datapoints[index, length].to_json
         info("Send to rest")
+
         RestClient.post "#{@hostname}/api/put",
           jsonstr,
           :content_type => :json, :accept => :json
@@ -115,105 +116,79 @@ module Metriks
       @registry.each do |name, metric|
         next if name.nil? || name.empty?
         name = name.to_s.gsub(/ +/, '_')
+        if @prefix
+          name = "#{@prefix}.#{name}"
+        end
 
         case metric
         when Metriks::Meter
-          datapoints << {
-            :metric => "#{name}.count",
-            :timestamp => time,
-            :value => metric.count,
-            :tags => @tags
-          }
-          datapoints << {
-            :metric => "#{name}.mean_rate",
-            :timestamp => time,
-            :value => metric.mean_rate,
-            :tags => @tags
-          }
-          datapoints << {
-            :metric => "#{name}.m1",
-            :timestamp => time,
-            :value => metric.one_minute_rate,
-            :tags => @tags
-          }
-          datapoints << {
-            :metric => "#{name}.m5",
-            :timestamp => time,
-            :value => metric.five_minute_rate,
-            :tags => @tags
-          }
-          datapoints << {
-            :metric => "#{name}.m15",
-            :timestamp => time,
-            :value => metric.fifteen_minute_rate,
-            :tags => @tags
-          }
+          datapoints |= create_datapoints name, metric, time, [
+            :count, :one_minute_rate, :five_minute_rate,
+            :fifteen_minute_rate, :mean_rate
+          ]
         when Metriks::Counter
-          datapoints << {
-            :metric => name,
-            :timestamp => time,
-            :value => metric.count,
-            :tags => @tags
-          }
+          datapoints |= create_datapoints name, metric, time, [
+            :count
+          ]
         when Metriks::Gauge
-          datapoints << {
-            :metric => name,
-            :timestamp => time,
-            :value => metric.value,
-            :tags => @tags
-          }
-        when Metriks::Histogram, Metriks::Timer, Metriks::UtilizationTimer
-          datapoints << {
-            :metric => "#{name}.count",
-            :timestamp => time,
-            :value => metric.count,
-            :tags => @tags
-          }
-          if Metriks::UtilizationTimer === metric || Metriks::Timer === metric
-            datapoints << {
-              :metric => "#{name}.mean_rate",
-              :timestamp => time,
-              :value => metric.mean_rate,
-              :tags => @tags
-            }
-            datapoints << {
-              :metric => "#{name}.m1",
-              :timestamp => time,
-              :value => metric.one_minute_rate,
-              :tags => @tags
-            }
-            datapoints << {
-              :metric => "#{name}.m5",
-              :timestamp => time,
-              :value => metric.five_minute_rate,
-              :tags => @tags
-            }
-            datapoints << {
-              :metric => "#{name}.m15",
-              :timestamp => time,
-              :value => metric.fifteen_minute_rate,
-              :tags => @tags
-            }
-          end
-          snapshot = metric.snapshot
-          datapoints << {
-            :metric => "#{name}.median",
-            :timestamp => time,
-            :value => snapshot.median,
-            :tags => @tags
-          }
+          datapoints |= create_datapoints name, metric, time, [
+            :value
+          ]
+        when Metriks::UtilizationTimer
+          datapoints |= create_datapoints name, metric, time, [
+            :count, :one_minute_rate, :five_minute_rate,
+            :fifteen_minute_rate, :mean_rate,
+            :min, :max, :mean, :stddev,
+            :one_minute_utilization, :five_minute_utilization,
+            :fifteen_minute_utilization, :mean_utilization,
+          ], [
+            :median, :get_95th_percentile
+          ]
 
-          @percentiles.each do |percentile|
-            datapoints << {
-              :metric => "#{name}.p#{(percentile * 100).to_i}",
-              :timestamp => time,
-              :value => snapshot.value(percentile),
-              :tags => @tags
-            }
-          end
+          when Metriks::Timer
+          datapoints |= create_datapoints name, metric, time, [
+            :count, :one_minute_rate, :five_minute_rate,
+            :fifteen_minute_rate, :mean_rate,
+            :min, :max, :mean, :stddev
+          ], [
+            :median, :get_95th_percentile
+          ]
+          when Metriks::Histogram
+          datapoints |= create_datapoints name, metric, time, [
+            :count, :min, :max, :mean, :stddev
+          ], [
+            :median, :get_95th_percentile
+          ]
         end
       end
       info("Captured #{datapoints.size} metrics")
+      datapoints
+    end
+
+    def create_datapoints(base_name, metric, time, keys, snapshot_keys = [])
+      datapoints = []
+      keys.flatten.each do |key|
+        name = key.to_s.gsub(/^get_/, '')
+        datapoints << {
+          :metric => "#{base_name}.#{name}",
+          :timestamp => time,
+          :value => metric.send(key),
+          :tags => @tags
+        }
+      end
+
+      unless snapshot_keys.empty?
+        snapshot = metric.snapshot
+        snapshot_keys.flatten.each do |key|
+          name = key.to_s.gsub(/^get_/, '')
+          datapoints << {
+            :metric => "#{base_name}.#{name}",
+            :timestamp => time,
+            :value => snapshot.send(key),
+            :tags => @tags
+          }
+        end
+      end
       datapoints
     end
   end
