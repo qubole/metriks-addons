@@ -1,9 +1,10 @@
 require 'metriks/time_tracker'
 require 'rest-client'
+require 'logger'
 
 module Metriks
   class OpenTSDBReporter
-    attr_accessor :prefix, :source, :data, :hostname, :tags
+    attr_accessor :prefix, :source, :data, :hostname, :tags, :logger
 
     def initialize(h, t, options = {})
       @hostname = h
@@ -29,9 +30,9 @@ module Metriks
       @running = false
     end
 
-    def info(msg)
+    def log(level, msg)
       if !@logger.nil?
-        @logger.info(msg)
+        @logger.send level, msg
       end
     end
 
@@ -69,14 +70,11 @@ module Metriks
     def flush
       begin
         @mutex.synchronize do
-          info("Flushing metrics")
+          log "debug", "Flushing metrics"
           submit get_datapoints
         end
       rescue Exception => ex
-        if !@logger.nil?
-          @logger.error(ex.message)
-          @logger.error(ex.stacktrace)
-        end
+        log "error",ex.message
         @on_error[ex] rescue nil
       end
     end
@@ -87,26 +85,20 @@ module Metriks
       index = 0
       length = @batch_size
       while index < datapoints.size
-        info("Starting from #{index}")
         to_send = nil
         if datapoints.size < (index + length)
           length = datapoints.size - index
         else
           length = @batch_size
         end
-        info("Length is #{length}")
-        info("Begin post")
-        info(datapoints[index, length].inspect)
-        info("To Json")
         jsonstr = datapoints[index, length].to_json
-        info("Send to rest")
-
         RestClient.post "#{@hostname}/api/put",
           jsonstr,
           :content_type => :json, :accept => :json
-        info("Put done")
+        log "debug", "Sent #{length} metrics from #{index}"
         index += length
       end
+      log "info", "Sent #{datapoints.size} metrics"
     end
 
     def get_datapoints
@@ -161,7 +153,6 @@ module Metriks
           ]
         end
       end
-      info("Captured #{datapoints.size} metrics")
       datapoints
     end
 

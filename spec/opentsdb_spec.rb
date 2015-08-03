@@ -123,7 +123,6 @@ describe "Smoke test" do
   it "histogram" do
     @registry.histogram('histogram.testing').update(1.5)
     datapoints = @reporter.get_datapoints
-    print datapoints.inspect
     expect(datapoints.size).to eql(7)
     expect(datapoints[0][:metric]).to eql("histogram.testing.count")
     expect(datapoints[0][:value]).to eql(1)
