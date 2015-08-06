@@ -95,12 +95,8 @@ module Metriks
       time = @time_tracker.now_floored
 
       datapoints = {}
-      meter = []
       counter = []
       gauge = []
-      utilization_timer = []
-      timer = []
-      histogram = []
       @registry.each do |name, metric|
         next if name.nil? || name.empty?
         name = name.to_s.gsub(/ +/, '_')
@@ -110,7 +106,7 @@ module Metriks
 
         case metric
         when Metriks::Meter
-          meter |= create_datapoints name, metric, time, [
+          counter |= create_datapoints name, metric, time, [
             :count, :one_minute_rate, :five_minute_rate,
             :fifteen_minute_rate, :mean_rate
           ]
@@ -123,7 +119,7 @@ module Metriks
             :value
           ]
         when Metriks::UtilizationTimer
-          utilization_timer |= create_datapoints name, metric, time, [
+          counter |= create_datapoints name, metric, time, [
             :count, :one_minute_rate, :five_minute_rate,
             :fifteen_minute_rate, :mean_rate,
             :min, :max, :mean, :stddev,
@@ -134,7 +130,7 @@ module Metriks
           ]
 
           when Metriks::Timer
-          timer |= create_datapoints name, metric, time, [
+          counter |= create_datapoints name, metric, time, [
             :count, :one_minute_rate, :five_minute_rate,
             :fifteen_minute_rate, :mean_rate,
             :min, :max, :mean, :stddev
@@ -142,7 +138,7 @@ module Metriks
             :median, :get_95th_percentile
           ]
           when Metriks::Histogram
-          histogram |= create_datapoints name, metric, time, [
+          counter |= create_datapoints name, metric, time, [
             :count, :min, :max, :mean, :stddev
           ], [
             :median, :get_95th_percentile
@@ -150,12 +146,8 @@ module Metriks
         end
       end
       
-      datapoints[:meter] = meter if meter.any?
       datapoints[:counter] = counter if counter.any?
       datapoints[:gauge] = gauge if gauge.any?
-      datapoints[:utilization_timer] = utilization_timer if utilization_timer.any?
-      datapoints[:timer] = timer if timer.any?
-      datapoints[:histogram] = histogram if histogram.any?
 
       datapoints
     end
