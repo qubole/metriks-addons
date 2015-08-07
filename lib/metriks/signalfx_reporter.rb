@@ -85,9 +85,9 @@ module Metriks
       return if datapoints.empty?
 
       jsonstr = datapoints.to_json
-      RestClient.post "#{@hostname}/api/datapoint?orgid=#{@orgid}",
-        jsonstr,
-        :content_type => :json, :accept => :json, :'X-SF-TOKEN' => @x_sf_token
+      response  = RestClient.post "#{@hostname}?orgid=#{@orgid}",
+						        jsonstr,
+						        :content_type => :json, :accept => :json, :'X-SF-TOKEN' => @x_sf_token
       log "info", "Sent #{datapoints.size} metrics"
     end
 
@@ -160,7 +160,7 @@ module Metriks
           :metric => "#{base_name}.#{name}",
           :timestamp => time,
           :value => metric.send(key),
-          :tags => @tags
+          :dimensions => @tags
         }
       end
 
@@ -172,7 +172,7 @@ module Metriks
             :metric => "#{base_name}.#{name}",
             :timestamp => time,
             :value => snapshot.send(key),
-            :tags => @tags
+            :dimensions => @tags
           }
         end
       end
