@@ -12,21 +12,21 @@ Gem::Specification.new do |s|
   ## Leave these as is they will be modified for you by the rake gemspec task.
   ## If your rubyforge_project name is different, then edit it and comment out
   ## the sub! line in the Rakefile
-  s.name              = 'metriks-opentsdb'
-  s.version           = '1.2.0'
+  s.name              = 'metriks-addons'
+  s.version           = '2.1.0'
   s.date              = '2015-08-03'
 
   ## Make sure your summary is short. The description may be as long
   ## as you like.
-  s.summary     = "OpenTSDB reporter for Metriks."
-  s.description = "OpenTSDB reporter for Metriks."
+  s.summary     = "Reporters for Metriks."
+  s.description = "OpenTSDB and SignalFX reporter for Metriks."
 
   ## List the primary authors. If there are a bunch of authors, it's probably
   ## better to set the email to an email list or something. If you don't have
   ## a custom homepage, consider using your GitHub URL or the like.
   s.authors  = ["Rajat Venkatesh"]
   s.email    = 'rvenkatesh@qubole.com'
-  s.homepage = 'https://github.com/vrajat/metriks-opentsdb'
+  s.homepage = 'https://github.com/vrajat/metriks-addons'
 
   ## This gets added to the $LOAD_PATH so that 'lib/NAME.rb' can be required as
   ## require 'NAME.rb' or'/lib/NAME/file.rb' can be as require 'NAME/file.rb'
@@ -62,7 +62,7 @@ Gem::Specification.new do |s|
     LICENSE
     README.md
     Rakefile
-    lib/metriks-opentsdb.rb
+    lib/metriks-addons.rb
     lib/metriks/opentsdb_reporter.rb
     metriks-opentsdb.gemspec
     spec/opentsdb_spec.rb

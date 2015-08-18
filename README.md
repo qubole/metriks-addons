@@ -1,8 +1,9 @@
 # Metriks reporter for OpenTSDB
 
-[![Build Status](https://travis-ci.org/vrajat/metriks-opentsdb.svg)](https://travis-ci.org/vrajat/metriks-opentsdb)
+[![Build Status](https://travis-ci.org/vrajat/metriks-addons.svg)](https://travis-ci.org/vrajat/metriks-addons)
 
-This is the [metriks](https://github.com/eric/metriks) reporter for OpenTSDB Metrics.
+This is the [metriks](https://github.com/eric/metriks) reporter for
+OpenTSDB and SignalFX.
 It is heavily inspired from
 [Librato Reporter] (https://github.com/eric/metriks-librato_metrics)
 
