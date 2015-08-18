@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   ## the sub! line in the Rakefile
   s.name              = 'metriks-addons'
   s.version           = '2.1.0'
-  s.date              = '2015-08-03'
+  s.date              = '2015-08-18'
 
   ## Make sure your summary is short. The description may be as long
   ## as you like.
@@ -64,8 +64,10 @@ Gem::Specification.new do |s|
     Rakefile
     lib/metriks-addons.rb
     lib/metriks/opentsdb_reporter.rb
-    metriks-opentsdb.gemspec
+    lib/metriks/signalfx_reporter.rb
+    metriks-addons.gemspec
     spec/opentsdb_spec.rb
+    spec/signalfx_spec.rb
   ]
   # = MANIFEST =
 
