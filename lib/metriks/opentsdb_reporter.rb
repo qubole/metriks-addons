@@ -26,6 +26,14 @@ module Metriks
         @percentiles = [ 0.95, 0.99]
       end
 
+      if not @logger.nil?
+        RestClient.log =
+          Object.new.tap do |proxy|
+            def proxy.<<(message)
+              Rails.logger.info message
+            end
+          end
+      end
       @mutex = Mutex.new
       @running = false
     end
