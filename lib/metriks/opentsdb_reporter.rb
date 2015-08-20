@@ -106,7 +106,7 @@ module Metriks
         log "debug", "Sent #{length} metrics from #{index}"
         index += length
       end
-      log "info", "Sent #{datapoints.size} metrics"
+      log "info", "Sent #{datapoints.size} metrics to OpenTSDB"
     end
 
     def get_datapoints

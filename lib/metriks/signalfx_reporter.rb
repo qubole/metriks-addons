@@ -93,11 +93,10 @@ module Metriks
       return if datapoints.empty?
 
       jsonstr = datapoints.to_json
-      log "info", jsonstr
       response  = RestClient.post "#{@hostname}?orgid=#{@orgid}",
 						        jsonstr,
 						        :content_type => :json, :accept => :json, :'X-SF-TOKEN' => @x_sf_token
-      log "info", "Sent #{datapoints.size} metrics"
+      log "info", "Sent #{datapoints.size} metrics to SignalFX"
     end
 
     def get_datapoints
