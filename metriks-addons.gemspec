@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   ## the sub! line in the Rakefile
   s.name              = 'metriks-addons'
   s.version           = '2.2.2'
-  s.date              = '2015-08-19'
+  s.date              = '2015-08-20'
 
   ## Make sure your summary is short. The description may be as long
   ## as you like.
