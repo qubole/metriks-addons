@@ -30,7 +30,7 @@ module Metriks
         RestClient.log =
           Object.new.tap do |proxy|
             def proxy.<<(message)
-              Rails.logger.info message
+              Rails.logger.debug message
             end
           end
       end
