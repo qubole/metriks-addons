@@ -181,7 +181,7 @@ module Metriks
           name = key.to_s.gsub(/^get_/, '')
           datapoints << {
             :metric => "#{base_name}.#{name}",
-            :timestamp => time,
+            :timestamp => time*1000,
             :value => snapshot.send(key),
             :dimensions => @tags
           }
