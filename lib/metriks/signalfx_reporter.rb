@@ -93,10 +93,12 @@ module Metriks
       return if datapoints.empty?
 
       jsonstr = datapoints.to_json
+      log "debug", "Json for SignalFx: #{jsonstr}"
       response  = RestClient.post "#{@hostname}?orgid=#{@orgid}",
 						        jsonstr,
 						        :content_type => :json, :accept => :json, :'X-SF-TOKEN' => @x_sf_token
       log "info", "Sent #{datapoints.size} metrics to SignalFX"
+      log "debug", "Response is: #{response}"
     end
 
     def get_datapoints
@@ -105,6 +107,7 @@ module Metriks
       datapoints = {}
       counter = []
       gauge = []
+      log "debug", "Resgistry: #{@registry}"
       @registry.each do |name, metric|
         next if name.nil? || name.empty?
         name = name.to_s.gsub(/ +/, '_')
@@ -166,7 +169,7 @@ module Metriks
         name = key.to_s.gsub(/^get_/, '')
         datapoints << {
           :metric => "#{base_name}.#{name}",
-          :timestamp => time,
+          :timestamp => time*1000,
           :value => metric.send(key),
           :dimensions => @tags
         }
@@ -178,7 +181,7 @@ module Metriks
           name = key.to_s.gsub(/^get_/, '')
           datapoints << {
             :metric => "#{base_name}.#{name}",
-            :timestamp => time,
+            :timestamp => time*1000,
             :value => snapshot.send(key),
             :dimensions => @tags
           }
