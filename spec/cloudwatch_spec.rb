@@ -5,9 +5,6 @@ require 'metriks/cloudwatch_reporter'
 describe "Smoke test" do
   before(:each) do
 		AWS::CloudWatch.any_instance.stub(:put_metric_data)
-  end
-
-  before(:each) do
     @registry = Metriks::Registry.new
     @reporter = Metriks::CloudWatchReporter.new(
       'DummyDummyDummyDummy', 
