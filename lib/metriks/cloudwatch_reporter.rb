@@ -27,6 +27,10 @@ module Metriks
         @percentiles = [ 0.95, 0.99]
       end
 
+			@mutex = Mutex.new
+      @running = false
+    end
+
     def log(level, msg)
       if !@logger.nil?
         @logger.send level, msg
