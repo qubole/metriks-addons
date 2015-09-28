@@ -1,6 +1,7 @@
 require 'metriks/time_tracker'
 require 'logger'
 require 'aws'
+require 'time'
 
 module Metriks
   class CloudWatchReporter
@@ -83,7 +84,7 @@ module Metriks
     def submit(datapoints)
       return if datapoints.empty?
 			datapoints.each do |datapoint|
-				@cw.put_metric_data({:namespace => @namespace, 
+				response = @cw.put_metric_data({:namespace => @namespace, 
 															:metric_data => [datapoint]
 														})
 			end	
@@ -91,7 +92,7 @@ module Metriks
     end
 
     def get_datapoints
-      time = @time_tracker.now_floored
+      time = Time.at(@time_tracker.now_floored).iso8601
 
       datapoints = []
       @registry.each do |name, metric|
@@ -152,7 +153,7 @@ module Metriks
 
     def create_datapoints(base_name, metric, time, keys, keys_unit, snapshot_keys = [], snapshot_keys_unit = [])
       datapoints = []
-      
+
       keys.flatten.zip(keys_unit.flatten).each do |key, key_unit|
         name = key.to_s.gsub(/^get_/, '')
         datapoints << {
