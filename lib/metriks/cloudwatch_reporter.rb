@@ -106,67 +106,74 @@ module Metriks
           datapoints |= create_datapoints name, metric, time, [
             :count, :one_minute_rate, :five_minute_rate,
             :fifteen_minute_rate, :mean_rate
+          ], [
+          	'Count', 'Count/Second', 'Count/Second',
+          	'Count/Second', 'Count/Second'
           ]
         when Metriks::Counter
           datapoints |= create_datapoints name, metric, time, [
             :count
-          ]
+          ], ['Count']
         when Metriks::Gauge
           datapoints |= create_datapoints name, metric, time, [
             :value
-          ]
-        when Metriks::UtilizationTimer
-          datapoints |= create_datapoints name, metric, time, [
-            :count, :one_minute_rate, :five_minute_rate,
-            :fifteen_minute_rate, :mean_rate,
-            :min, :max, :mean, :stddev,
-            :one_minute_utilization, :five_minute_utilization,
-            :fifteen_minute_utilization, :mean_utilization,
           ], [
-            :median, :get_95th_percentile
+          	'Count'
           ]
-
-          when Metriks::Timer
+        when Metriks::Timer
           datapoints |= create_datapoints name, metric, time, [
             :count, :one_minute_rate, :five_minute_rate,
             :fifteen_minute_rate, :mean_rate,
             :min, :max, :mean, :stddev
           ], [
+          	'Count', 'Count/Second', 'Count/Second',
+          	'Count/Second', 'Count/Second',
+          	'Seconds', 'Seconds', 'Seconds', 'Seconds'
+          ], [
             :median, :get_95th_percentile
+          ], [
+          	'Seconds', 'Seconds'
           ]
-          when Metriks::Histogram
+        when Metriks::Histogram
           datapoints |= create_datapoints name, metric, time, [
             :count, :min, :max, :mean, :stddev
           ], [
+          	'Count', 'Count', 'Count', 'Count',
+          	'Count'
+          ], [
             :median, :get_95th_percentile
+          ], [
+          	'Count', 'Count'
           ]
         end
       end
       datapoints
     end
 
-    def create_datapoints(base_name, metric, time, keys, snapshot_keys = [])
+    def create_datapoints(base_name, metric, time, keys, keys_unit, snapshot_keys = [], snapshot_keys_unit = [])
       datapoints = []
       
-      keys.flatten.each do |key|
+      keys.flatten.zip(keys_unit.flatten).each do |key, key_unit|
         name = key.to_s.gsub(/^get_/, '')
         datapoints << {
           :metric_name => "#{base_name}.#{name}",
           :timestamp => time,
           :value => metric.send(key),
-          :dimensions => @dimensions
+          :dimensions => @dimensions,
+          :unit => key_unit
         }
       end
 
       unless snapshot_keys.empty?
         snapshot = metric.snapshot
-        snapshot_keys.flatten.each do |key|
+        snapshot_keys.flatten.zip(snapshot_keys_unit.flatten).each do |key, key_unit|
           name = key.to_s.gsub(/^get_/, '')
           datapoints << {
             :metric_name => "#{base_name}.#{name}",
             :timestamp => time,
             :value => snapshot.send(key),
-            :dimensions => @dimensions
+            :dimensions => @dimensions,
+            :unit => key_unit
           }
         end
       end
