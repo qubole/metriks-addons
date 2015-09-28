@@ -9,7 +9,7 @@ module Metriks
     def initialize(access_key, secret_key, namespace, tags, options = {})
       @cw = AWS::CloudWatch.new(:access_key_id => access_key, :secret_access_key => secret_key)
       @namespace = namespace
-      @tags = tags
+      @dimensions = get_dimensions(tags)
 
       @prefix = options[:prefix]
       @source = options[:source]
@@ -82,21 +82,18 @@ module Metriks
 
     def submit(datapoints)
       return if datapoints.empty?
-
-      jsonstr = datapoints.to_json
-      log "debug", "Json for SignalFx: #{jsonstr}"
-
- 			@cw.put_metric_data({:namespace => @namespace, :metric_data => [jsonstr]})
+			datapoints.each do |datapoint|
+				@cw.put_metric_data({:namespace => @namespace, 
+															:metric_data => [datapoint]
+														})
+			end	
       log "info", "Sent #{datapoints.size} metrics to CloudWatch"
     end
 
     def get_datapoints
       time = @time_tracker.now_floored
 
-      datapoints = {}
-      counter = []
-      gauge = []
-      log "debug", "Resgistry: #{@registry}"
+      datapoints = []
       @registry.each do |name, metric|
         next if name.nil? || name.empty?
         name = name.to_s.gsub(/ +/, '_')
@@ -106,20 +103,20 @@ module Metriks
 
         case metric
         when Metriks::Meter
-          counter |= create_datapoints name, metric, time, [
+          datapoints |= create_datapoints name, metric, time, [
             :count, :one_minute_rate, :five_minute_rate,
             :fifteen_minute_rate, :mean_rate
           ]
         when Metriks::Counter
-          counter |= create_datapoints name, metric, time, [
+          datapoints |= create_datapoints name, metric, time, [
             :count
           ]
         when Metriks::Gauge
-          gauge |= create_datapoints name, metric, time, [
+          datapoints |= create_datapoints name, metric, time, [
             :value
           ]
         when Metriks::UtilizationTimer
-          counter |= create_datapoints name, metric, time, [
+          datapoints |= create_datapoints name, metric, time, [
             :count, :one_minute_rate, :five_minute_rate,
             :fifteen_minute_rate, :mean_rate,
             :min, :max, :mean, :stddev,
@@ -130,7 +127,7 @@ module Metriks
           ]
 
           when Metriks::Timer
-          counter |= create_datapoints name, metric, time, [
+          datapoints |= create_datapoints name, metric, time, [
             :count, :one_minute_rate, :five_minute_rate,
             :fifteen_minute_rate, :mean_rate,
             :min, :max, :mean, :stddev
@@ -138,29 +135,26 @@ module Metriks
             :median, :get_95th_percentile
           ]
           when Metriks::Histogram
-          counter |= create_datapoints name, metric, time, [
+          datapoints |= create_datapoints name, metric, time, [
             :count, :min, :max, :mean, :stddev
           ], [
             :median, :get_95th_percentile
           ]
         end
       end
-
-      datapoints[:counter] = counter if counter.any?
-      datapoints[:gauge] = gauge if gauge.any?
-
       datapoints
     end
 
     def create_datapoints(base_name, metric, time, keys, snapshot_keys = [])
       datapoints = []
+      
       keys.flatten.each do |key|
         name = key.to_s.gsub(/^get_/, '')
         datapoints << {
           :metric_name => "#{base_name}.#{name}",
           :timestamp => time,
           :value => metric.send(key),
-          :dimensions => @tags
+          :dimensions => @dimensions
         }
       end
 
@@ -172,11 +166,22 @@ module Metriks
             :metric_name => "#{base_name}.#{name}",
             :timestamp => time,
             :value => snapshot.send(key),
-            :dimensions => @tags
+            :dimensions => @dimensions
           }
         end
       end
       datapoints
+    end
+    
+    def get_dimensions(tags)
+    	dimensions =[]
+	    tags.each do |name, value|
+    		dimensions << {
+    			:name => "#{name}",
+    			:value => value
+    		}
+    	end
+	    dimensions
     end
   end
 end
