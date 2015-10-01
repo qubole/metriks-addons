@@ -81,15 +81,15 @@ module Metriks
       end
     end
 
-		def submit(datapoints)
-			return if datapoints.empty?
-			datapoints.each do |datapoint|
-				response = @cw.put_metric_data({:namespace => @namespace,
-																				:metric_data => [datapoint]
-																			})
-			end
-			log "info", "Sent #{datapoints.size} metrics to CloudWatch"
-		end
+    def submit(datapoints)
+      return if datapoints.empty?
+      datapoints.each do |datapoint|
+      response = @cw.put_metric_data({:namespace => @namespace,
+                                      :metric_data => [datapoint]
+                                    })
+      end
+      log "info", "Sent #{datapoints.size} metrics to CloudWatch"
+    end
 
     def get_datapoints
       time = Time.at(@time_tracker.now_floored).iso8601
@@ -180,16 +180,16 @@ module Metriks
       end
       datapoints
     end
-    
+
     def get_dimensions(tags)
-			dimensions =[]
-			tags.each do |name, value|
-				dimensions << {
-					:name => "#{name}",
-					:value => value
-				}
-			end
-			dimensions
+      dimensions =[]
+      tags.each do |name, value|
+        dimensions << {
+          :name => "#{name}",
+          :value => value
+        }
+      end
+      dimensions
     end
   end
 end
