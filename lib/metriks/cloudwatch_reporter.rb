@@ -106,18 +106,20 @@ module Metriks
             :count, :one_minute_rate, :five_minute_rate,
             :fifteen_minute_rate, :mean_rate
           ], [
-          	'Count', 'Count/Second', 'Count/Second',
-          	'Count/Second', 'Count/Second'
+            'Count', 'Count/Second', 'Count/Second',
+            'Count/Second', 'Count/Second'
           ]
         when Metriks::Counter
           datapoints |= create_datapoints name, metric, time, [
             :count
-          ], ['Count']
+          ], [
+            'Count'
+          ]
         when Metriks::Gauge
           datapoints |= create_datapoints name, metric, time, [
             :value
           ], [
-          	'Count'
+            'Count'
           ]
         when Metriks::Timer
           datapoints |= create_datapoints name, metric, time, [
@@ -125,24 +127,24 @@ module Metriks
             :fifteen_minute_rate, :mean_rate,
             :min, :max, :mean, :stddev
           ], [
-          	'Count', 'Count/Second', 'Count/Second',
-          	'Count/Second', 'Count/Second',
-          	'Seconds', 'Seconds', 'Seconds', 'Seconds'
+            'Count', 'Count/Second', 'Count/Second',
+            'Count/Second', 'Count/Second',
+            'Seconds', 'Seconds', 'Seconds', 'Seconds'
           ], [
             :median, :get_95th_percentile
           ], [
-          	'Seconds', 'Seconds'
+            'Seconds', 'Seconds'
           ]
         when Metriks::Histogram
           datapoints |= create_datapoints name, metric, time, [
             :count, :min, :max, :mean, :stddev
           ], [
-          	'Count', 'Count', 'Count', 'Count',
-          	'Count'
+            'Count', 'Count', 'Count', 'Count',
+            'Count'
           ], [
             :median, :get_95th_percentile
           ], [
-          	'Count', 'Count'
+            'Count', 'Count'
           ]
         end
       end
