@@ -28,7 +28,7 @@ module Metriks
         @percentiles = [ 0.95, 0.99]
       end
 
-			@mutex = Mutex.new
+      @mutex = Mutex.new
       @running = false
     end
 
@@ -84,9 +84,7 @@ module Metriks
     def submit(datapoints)
       return if datapoints.empty?
       datapoints.each do |datapoint|
-      response = @cw.put_metric_data({:namespace => @namespace,
-                                      :metric_data => [datapoint]
-                                    })
+        response = @cw.put_metric_data({:namespace => @namespace, :metric_data => [datapoint]})
       end
       log "info", "Sent #{datapoints.size} metrics to CloudWatch"
     end
