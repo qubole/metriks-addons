@@ -2,10 +2,10 @@ require 'metriks/time_tracker'
 require 'logger'
 require 'aws'
 require 'time'
-require 'metriks/base_reporter'
+require 'metriks_addons/base_reporter'
 
-module Metriks
-  class CloudWatchReporter < Metriks::BaseReporter
+module MetriksAddons
+  class CloudWatchReporter < BaseReporter
     attr_accessor :prefix, :source, :cw, :tags, :logger
 
     def initialize(access_key, secret_key, namespace, tags, options = {})

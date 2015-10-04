@@ -1,4 +1,4 @@
-module Metriks
+module MetriksAddons
   class BaseReporter
     def initialize(options = {})
       @logger       = options[:logger] || nil

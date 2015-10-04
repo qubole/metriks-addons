@@ -1,13 +1,13 @@
 require 'webmock/rspec'
 require 'metriks'
-require 'metriks/cloudwatch_reporter'
+require 'metriks_addons/cloudwatch_reporter'
 
 describe "Smoke test" do
   before(:each) do
     AWS::CloudWatch.any_instance.stub(:put_metric_data)
     @registry = Metriks::Registry.new
-    @reporter = Metriks::CloudWatchReporter.new(
-      'DummyDummyDummyDummy', 
+    @reporter = MetriksAddons::CloudWatchReporter.new(
+      'DummyDummyDummyDummy',
       "DummyDummyDummyDummyDummyDummyDummyDummy",
       "testingtier",
       {:env =>"test"},
@@ -191,7 +191,6 @@ describe "Smoke test" do
     expect(datapoints[0][:value]).to eql(123)
     expect(datapoints[0][:dimensions]).to include({:name => "env", :value => "test"})
     expect(datapoints[0][:timestamp]).not_to be_nil
-    expect(datapoints[0][:unit]).to eql('Count')    
+    expect(datapoints[0][:unit]).to eql('Count')
   end
 end
-

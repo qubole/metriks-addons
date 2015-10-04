@@ -1,6 +1,6 @@
 require 'webmock/rspec'
 require 'metriks'
-require 'metriks/signalfx_reporter'
+require 'metriks_addons/signalfx_reporter'
 
 describe "Smoke test" do
   before(:all) do
@@ -9,8 +9,8 @@ describe "Smoke test" do
 
   before(:each) do
     @registry = Metriks::Registry.new
-    @reporter = Metriks::SignalFxReporter.new(
-      'http://localhost:4242', 
+    @reporter = MetriksAddons::SignalFxReporter.new(
+      'http://localhost:4242',
       "123456789",
       "ABCD",
       {:env => "test"},
@@ -176,8 +176,8 @@ end
 describe "Rest Client" do
   before(:each) do
     @registry = Metriks::Registry.new
-    @reporter = Metriks::SignalFxReporter.new(
-      'http://localhost:4242/api/datapoint', 
+    @reporter = MetriksAddons::SignalFxReporter.new(
+      'http://localhost:4242/api/datapoint',
       "123456789",
       "ABCD",
       {:env => "test"},

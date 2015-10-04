@@ -1,16 +1,18 @@
 require 'metriks/time_tracker'
 require 'rest-client'
 require 'logger'
-require 'metriks/base_reporter'
+require 'metriks_addons/base_reporter'
 
-module Metriks
-  class OpenTSDBReporter < Metriks::BaseReporter
+module MetriksAddons
+  class SignalFxReporter < BaseReporter
     attr_accessor :prefix, :source, :data, :hostname, :tags, :logger
 
-    def initialize(h, t, options = {})
+    def initialize(h, token, id, tags, options = {})
       super(options)
       @hostname = h
-      @tags = t
+      @x_sf_token = token
+      @orgid = id
+      @tags = tags
 
       @prefix = options[:prefix]
       @source = options[:source]
@@ -30,29 +32,22 @@ module Metriks
     def submit(datapoints)
       return if datapoints.empty?
 
-      index = 0
-      length = @batch_size
-      while index < datapoints.size
-        to_send = nil
-        if datapoints.size < (index + length)
-          length = datapoints.size - index
-        else
-          length = @batch_size
-        end
-        jsonstr = datapoints[index, length].to_json
-        RestClient.post "#{@hostname}/api/put",
-          jsonstr,
-          :content_type => :json, :accept => :json
-        log "debug", "Sent #{length} metrics from #{index}"
-        index += length
-      end
-      log "info", "Sent #{datapoints.size} metrics to OpenTSDB"
+      jsonstr = datapoints.to_json
+      log "debug", "Json for SignalFx: #{jsonstr}"
+      response  = RestClient.post "#{@hostname}?orgid=#{@orgid}",
+						        jsonstr,
+						        :content_type => :json, :accept => :json, :'X-SF-TOKEN' => @x_sf_token
+      log "info", "Sent #{datapoints.size} metrics to SignalFX"
+      log "debug", "Response is: #{response}"
     end
 
     def get_datapoints
       time = @time_tracker.now_floored
 
-      datapoints = []
+      datapoints = {}
+      counter = []
+      gauge = []
+      log "debug", "Resgistry: #{@registry}"
       @registry.each do |name, metric|
         next if name.nil? || name.empty?
         name = name.to_s.gsub(/ +/, '_')
@@ -62,20 +57,20 @@ module Metriks
 
         case metric
         when Metriks::Meter
-          datapoints |= create_datapoints name, metric, time, [
+          counter |= create_datapoints name, metric, time, [
             :count, :one_minute_rate, :five_minute_rate,
             :fifteen_minute_rate, :mean_rate
           ]
         when Metriks::Counter
-          datapoints |= create_datapoints name, metric, time, [
+          counter |= create_datapoints name, metric, time, [
             :count
           ]
         when Metriks::Gauge
-          datapoints |= create_datapoints name, metric, time, [
+          gauge |= create_datapoints name, metric, time, [
             :value
           ]
         when Metriks::UtilizationTimer
-          datapoints |= create_datapoints name, metric, time, [
+          counter |= create_datapoints name, metric, time, [
             :count, :one_minute_rate, :five_minute_rate,
             :fifteen_minute_rate, :mean_rate,
             :min, :max, :mean, :stddev,
@@ -86,7 +81,7 @@ module Metriks
           ]
 
           when Metriks::Timer
-          datapoints |= create_datapoints name, metric, time, [
+          counter |= create_datapoints name, metric, time, [
             :count, :one_minute_rate, :five_minute_rate,
             :fifteen_minute_rate, :mean_rate,
             :min, :max, :mean, :stddev
@@ -94,13 +89,17 @@ module Metriks
             :median, :get_95th_percentile
           ]
           when Metriks::Histogram
-          datapoints |= create_datapoints name, metric, time, [
+          counter |= create_datapoints name, metric, time, [
             :count, :min, :max, :mean, :stddev
           ], [
             :median, :get_95th_percentile
           ]
         end
       end
+
+      datapoints[:counter] = counter if counter.any?
+      datapoints[:gauge] = gauge if gauge.any?
+
       datapoints
     end
 
@@ -110,9 +109,9 @@ module Metriks
         name = key.to_s.gsub(/^get_/, '')
         datapoints << {
           :metric => "#{base_name}.#{name}",
-          :timestamp => time,
+          :timestamp => time*1000,
           :value => metric.send(key),
-          :tags => @tags
+          :dimensions => @tags
         }
       end
 
@@ -122,9 +121,9 @@ module Metriks
           name = key.to_s.gsub(/^get_/, '')
           datapoints << {
             :metric => "#{base_name}.#{name}",
-            :timestamp => time,
+            :timestamp => time*1000,
             :value => snapshot.send(key),
-            :tags => @tags
+            :dimensions => @tags
           }
         end
       end

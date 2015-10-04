@@ -1,6 +1,6 @@
 require 'webmock/rspec'
 require 'metriks'
-require 'metriks/opentsdb_reporter'
+require 'metriks_addons/opentsdb_reporter'
 
 describe "Smoke test" do
   before(:all) do
@@ -9,7 +9,7 @@ describe "Smoke test" do
 
   before(:each) do
     @registry = Metriks::Registry.new
-    @reporter = Metriks::OpenTSDBReporter.new(
+    @reporter = MetriksAddons::OpenTSDBReporter.new(
       'http://localhost:4242',
       {:env => "test"},
       { :registry => @registry })
@@ -174,7 +174,7 @@ end
 describe "Rest Client" do
   before(:each) do
     @registry = Metriks::Registry.new
-    @reporter = Metriks::OpenTSDBReporter.new(
+    @reporter = MetriksAddons::OpenTSDBReporter.new(
       'http://localhost:4242',
       {:env => "test"},
       { :registry => @registry, :batch_size => 3})
