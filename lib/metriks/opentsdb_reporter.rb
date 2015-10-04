@@ -1,30 +1,21 @@
 require 'metriks/time_tracker'
 require 'rest-client'
 require 'logger'
+require 'metriks/base_reporter'
 
 module Metriks
-  class OpenTSDBReporter
+  class OpenTSDBReporter < Metriks::BaseReporter
     attr_accessor :prefix, :source, :data, :hostname, :tags, :logger
 
     def initialize(h, t, options = {})
+      super(options)
       @hostname = h
       @tags = t
 
       @prefix = options[:prefix]
       @source = options[:source]
 
-      @logger       = options[:logger] || nil
       @batch_size   = options[:batch_size] || 50
-      @registry     = options[:registry] || Metriks::Registry.default
-      @interval     = options[:interval] || 60
-      @time_tracker = Metriks::TimeTracker.new(@interval)
-      @on_error     = options[:on_error] || proc { |ex| }
-
-      if options[:percentiles]
-        @percentiles = options[:percentiles]
-      else
-        @percentiles = [ 0.95, 0.99]
-      end
 
       if not @logger.nil?
         RestClient.log =
@@ -33,57 +24,6 @@ module Metriks
               Rails.logger.debug message
             end
           end
-      end
-      @mutex = Mutex.new
-      @running = false
-    end
-
-    def log(level, msg)
-      if !@logger.nil?
-        @logger.send level, msg
-      end
-    end
-
-    def start
-      if @thread && @thread.alive?
-        return
-      end
-
-      @running = true
-      @thread = Thread.new do
-        while @running
-          @time_tracker.sleep
-
-          Thread.new do
-            flush
-          end
-        end
-      end
-    end
-
-    def stop
-      @running = false
-
-      if @thread
-        @thread.join
-        @thread = nil
-      end
-    end
-
-    def restart
-      stop
-      start
-    end
-
-    def flush
-      begin
-        @mutex.synchronize do
-          log "debug", "Flushing metrics"
-          submit get_datapoints
-        end
-      rescue Exception => ex
-        log "error",ex.message
-        @on_error[ex] rescue nil
       end
     end
 
