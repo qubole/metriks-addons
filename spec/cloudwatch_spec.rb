@@ -1,6 +1,6 @@
 require 'webmock/rspec'
 require 'metriks'
-require 'metriks_addons/cloudwatch_reporter'
+require 'metriks-addons/cloudwatch_reporter'
 
 describe "Smoke test" do
   before(:each) do

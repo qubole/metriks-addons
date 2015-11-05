@@ -1,6 +1,6 @@
 require 'webmock/rspec'
 require 'metriks'
-require 'metriks_addons/opentsdb_reporter'
+require 'metriks-addons/opentsdb_reporter'
 
 describe "Smoke test" do
   before(:all) do

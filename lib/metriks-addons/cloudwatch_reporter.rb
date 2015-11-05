@@ -2,7 +2,7 @@ require 'metriks/time_tracker'
 require 'logger'
 require 'aws'
 require 'time'
-require 'metriks_addons/base_reporter'
+require 'metriks-addons/base_reporter'
 
 module MetriksAddons
   class CloudWatchReporter < BaseReporter

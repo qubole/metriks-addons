@@ -1,6 +1,6 @@
 require 'webmock/rspec'
 require 'metriks'
-require 'metriks_addons/signalfx_reporter'
+require 'metriks-addons/signalfx_reporter'
 
 describe "Smoke test" do
   before(:all) do
