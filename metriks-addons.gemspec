@@ -13,8 +13,8 @@ Gem::Specification.new do |s|
   ## If your rubyforge_project name is different, then edit it and comment out
   ## the sub! line in the Rakefile
   s.name              = 'metriks-addons'
-  s.version           = '2.3.0'
-  s.date              = '2015-10-04'
+  s.version           = '3.0.0'
+  s.date              = '2015-11-05'
 
   ## Make sure your summary is short. The description may be as long
   ## as you like.
@@ -63,9 +63,10 @@ Gem::Specification.new do |s|
     README.md
     Rakefile
     lib/metriks-addons.rb
-    lib/metriks/cloudwatch_reporter.rb
-    lib/metriks/opentsdb_reporter.rb
-    lib/metriks/signalfx_reporter.rb
+    lib/metriks-addons/base_reporter.rb
+    lib/metriks-addons/cloudwatch_reporter.rb
+    lib/metriks-addons/opentsdb_reporter.rb
+    lib/metriks-addons/signalfx_reporter.rb
     metriks-addons.gemspec
     spec/cloudwatch_spec.rb
     spec/opentsdb_spec.rb
