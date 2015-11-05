@@ -58,8 +58,7 @@ module MetriksAddons
         case metric
         when Metriks::Meter
           counter |= create_datapoints name, metric, time, [
-            :count, :one_minute_rate, :five_minute_rate,
-            :fifteen_minute_rate, :mean_rate
+            :count, :mean_rate
           ]
         when Metriks::Counter
           counter |= create_datapoints name, metric, time, [
@@ -71,28 +70,23 @@ module MetriksAddons
           ]
         when Metriks::UtilizationTimer
           counter |= create_datapoints name, metric, time, [
-            :count, :one_minute_rate, :five_minute_rate,
-            :fifteen_minute_rate, :mean_rate,
-            :min, :max, :mean, :stddev,
-            :one_minute_utilization, :five_minute_utilization,
-            :fifteen_minute_utilization, :mean_utilization,
+            :count, :mean_rate, :min, :max, :mean, :stddev, 
+            :mean_utilization
           ], [
-            :median, :get_95th_percentile
+            :median
           ]
 
           when Metriks::Timer
           counter |= create_datapoints name, metric, time, [
-            :count, :one_minute_rate, :five_minute_rate,
-            :fifteen_minute_rate, :mean_rate,
-            :min, :max, :mean, :stddev
+            :count, :mean_rate, :min, :max, :mean, :stddev
           ], [
-            :median, :get_95th_percentile
+            :median
           ]
           when Metriks::Histogram
           counter |= create_datapoints name, metric, time, [
             :count, :min, :max, :mean, :stddev
           ], [
-            :median, :get_95th_percentile
+            :median
           ]
         end
       end

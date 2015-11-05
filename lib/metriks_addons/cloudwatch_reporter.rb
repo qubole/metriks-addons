@@ -42,11 +42,9 @@ module MetriksAddons
         case metric
         when Metriks::Meter
           datapoints |= create_datapoints name, metric, time, [
-            :count, :one_minute_rate, :five_minute_rate,
-            :fifteen_minute_rate, :mean_rate
+            :count, :mean_rate
           ], [
-            'Count', 'Count/Second', 'Count/Second',
-            'Count/Second', 'Count/Second'
+            'Count', 'Count/Second'
           ]
         when Metriks::Counter
           datapoints |= create_datapoints name, metric, time, [
@@ -62,17 +60,14 @@ module MetriksAddons
           ]
         when Metriks::Timer
           datapoints |= create_datapoints name, metric, time, [
-            :count, :one_minute_rate, :five_minute_rate,
-            :fifteen_minute_rate, :mean_rate,
-            :min, :max, :mean, :stddev
+            :count, :mean_rate, :min, :max, :mean, :stddev
           ], [
-            'Count', 'Count/Second', 'Count/Second',
-            'Count/Second', 'Count/Second',
-            'Seconds', 'Seconds', 'Seconds', 'Seconds'
-          ], [
-            :median, :get_95th_percentile
-          ], [
+            'Count', 'Count/Second', 'Seconds', 'Seconds',
             'Seconds', 'Seconds'
+          ], [
+            :median
+          ], [
+            'Seconds'
           ]
         when Metriks::Histogram
           datapoints |= create_datapoints name, metric, time, [
@@ -81,9 +76,9 @@ module MetriksAddons
             'Count', 'Count', 'Count', 'Count',
             'Count'
           ], [
-            :median, :get_95th_percentile
+            :median
           ], [
-            'Count', 'Count'
+            'Count'
           ]
         end
       end
