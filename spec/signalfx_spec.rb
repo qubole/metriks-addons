@@ -25,31 +25,16 @@ describe "Smoke test" do
   it "meter" do
     @registry.meter('meter.testing').mark
     datapoints = @reporter.get_datapoints
-    expect(datapoints[:counter].size).to eql(5)
+    expect(datapoints[:counter].size).to eql(2)
     expect(datapoints[:counter][0][:metric]).to eql("meter.testing.count")
     expect(datapoints[:counter][0][:value]).to eql(1)
     expect(datapoints[:counter][0][:dimensions]).to include(:env => "test")
     expect(datapoints[:counter][0][:timestamp]).not_to be_nil
 
-    expect(datapoints[:counter][1][:metric]).to eql("meter.testing.one_minute_rate")
+    expect(datapoints[:counter][1][:metric]).to eql("meter.testing.mean_rate")
     expect(datapoints[:counter][1][:value]).not_to be_nil
     expect(datapoints[:counter][1][:dimensions]).to include(:env => "test")
     expect(datapoints[:counter][1][:timestamp]).not_to be_nil
-
-    expect(datapoints[:counter][2][:metric]).to eql("meter.testing.five_minute_rate")
-    expect(datapoints[:counter][2][:value]).to eql(0.0)
-    expect(datapoints[:counter][2][:dimensions]).to include(:env => "test")
-    expect(datapoints[:counter][2][:timestamp]).not_to be_nil
-
-    expect(datapoints[:counter][3][:metric]).to eql("meter.testing.fifteen_minute_rate")
-    expect(datapoints[:counter][3][:value]).to eql(0.0)
-    expect(datapoints[:counter][3][:dimensions]).to include(:env => "test")
-    expect(datapoints[:counter][3][:timestamp]).not_to be_nil
-
-    expect(datapoints[:counter][4][:metric]).to eql("meter.testing.mean_rate")
-    expect(datapoints[:counter][4][:value]).not_to be_nil
-    expect(datapoints[:counter][4][:dimensions]).to include(:env => "test")
-    expect(datapoints[:counter][4][:timestamp]).not_to be_nil
   end
 
   it "counter" do
@@ -65,67 +50,47 @@ describe "Smoke test" do
   it "timer" do
     @registry.timer('timer.testing').update(1.5)
     datapoints = @reporter.get_datapoints
-    expect(datapoints[:counter].size).to eql(11)
+    expect(datapoints[:counter].size).to eql(7)
     expect(datapoints[:counter][0][:metric]).to eql("timer.testing.count")
     expect(datapoints[:counter][0][:value]).to eql(1)
     expect(datapoints[:counter][0][:dimensions]).to include(:env => "test")
     expect(datapoints[:counter][0][:timestamp]).not_to be_nil
 
-    expect(datapoints[:counter][1][:metric]).to eql("timer.testing.one_minute_rate")
+    expect(datapoints[:counter][1][:metric]).to eql("timer.testing.mean_rate")
     expect(datapoints[:counter][1][:value]).not_to be_nil
     expect(datapoints[:counter][1][:dimensions]).to include(:env => "test")
     expect(datapoints[:counter][1][:timestamp]).not_to be_nil
 
-    expect(datapoints[:counter][2][:metric]).to eql("timer.testing.five_minute_rate")
-    expect(datapoints[:counter][2][:value]).to eql(0.0)
+    expect(datapoints[:counter][2][:metric]).to eql("timer.testing.min")
+    expect(datapoints[:counter][2][:value]).not_to be_nil
     expect(datapoints[:counter][2][:dimensions]).to include(:env => "test")
     expect(datapoints[:counter][2][:timestamp]).not_to be_nil
 
-    expect(datapoints[:counter][3][:metric]).to eql("timer.testing.fifteen_minute_rate")
-    expect(datapoints[:counter][3][:value]).to eql(0.0)
+    expect(datapoints[:counter][3][:metric]).to eql("timer.testing.max")
+    expect(datapoints[:counter][3][:value]).not_to be_nil
     expect(datapoints[:counter][3][:dimensions]).to include(:env => "test")
     expect(datapoints[:counter][3][:timestamp]).not_to be_nil
 
-    expect(datapoints[:counter][4][:metric]).to eql("timer.testing.mean_rate")
+    expect(datapoints[:counter][4][:metric]).to eql("timer.testing.mean")
     expect(datapoints[:counter][4][:value]).not_to be_nil
     expect(datapoints[:counter][4][:dimensions]).to include(:env => "test")
     expect(datapoints[:counter][4][:timestamp]).not_to be_nil
 
-    expect(datapoints[:counter][5][:metric]).to eql("timer.testing.min")
+    expect(datapoints[:counter][5][:metric]).to eql("timer.testing.stddev")
     expect(datapoints[:counter][5][:value]).not_to be_nil
     expect(datapoints[:counter][5][:dimensions]).to include(:env => "test")
     expect(datapoints[:counter][5][:timestamp]).not_to be_nil
 
-    expect(datapoints[:counter][6][:metric]).to eql("timer.testing.max")
+    expect(datapoints[:counter][6][:metric]).to eql("timer.testing.median")
     expect(datapoints[:counter][6][:value]).not_to be_nil
     expect(datapoints[:counter][6][:dimensions]).to include(:env => "test")
     expect(datapoints[:counter][6][:timestamp]).not_to be_nil
-
-    expect(datapoints[:counter][7][:metric]).to eql("timer.testing.mean")
-    expect(datapoints[:counter][7][:value]).not_to be_nil
-    expect(datapoints[:counter][7][:dimensions]).to include(:env => "test")
-    expect(datapoints[:counter][7][:timestamp]).not_to be_nil
-
-    expect(datapoints[:counter][8][:metric]).to eql("timer.testing.stddev")
-    expect(datapoints[:counter][8][:value]).not_to be_nil
-    expect(datapoints[:counter][8][:dimensions]).to include(:env => "test")
-    expect(datapoints[:counter][8][:timestamp]).not_to be_nil
-
-    expect(datapoints[:counter][9][:metric]).to eql("timer.testing.median")
-    expect(datapoints[:counter][9][:value]).not_to be_nil
-    expect(datapoints[:counter][9][:dimensions]).to include(:env => "test")
-    expect(datapoints[:counter][9][:timestamp]).not_to be_nil
-
-    expect(datapoints[:counter][10][:metric]).to eql("timer.testing.95th_percentile")
-    expect(datapoints[:counter][10][:value]).not_to be_nil
-    expect(datapoints[:counter][10][:dimensions]).to include(:env => "test")
-    expect(datapoints[:counter][10][:timestamp]).not_to be_nil
   end
 
   it "histogram" do
     @registry.histogram('histogram.testing').update(1.5)
     datapoints = @reporter.get_datapoints
-    expect(datapoints[:counter].size).to eql(7)
+    expect(datapoints[:counter].size).to eql(6)
     expect(datapoints[:counter][0][:metric]).to eql("histogram.testing.count")
     expect(datapoints[:counter][0][:value]).to eql(1)
     expect(datapoints[:counter][0][:dimensions]).to include(:env => "test")
@@ -155,11 +120,6 @@ describe "Smoke test" do
     expect(datapoints[:counter][5][:value]).not_to be_nil
     expect(datapoints[:counter][5][:dimensions]).to include(:env => "test")
     expect(datapoints[:counter][5][:timestamp]).not_to be_nil
-
-    expect(datapoints[:counter][6][:metric]).to eql("histogram.testing.95th_percentile")
-    expect(datapoints[:counter][6][:value]).not_to be_nil
-    expect(datapoints[:counter][6][:dimensions]).to include(:env => "test")
-    expect(datapoints[:counter][6][:timestamp]).not_to be_nil
   end
 
   it "gauge" do
