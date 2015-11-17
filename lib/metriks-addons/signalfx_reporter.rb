@@ -37,7 +37,7 @@ module MetriksAddons
       response  = RestClient.post "#{@hostname}?orgid=#{@orgid}",
 						        jsonstr,
 						        :content_type => :json, :accept => :json, :'X-SF-TOKEN' => @x_sf_token
-      log "info", "Sent #{datapoints.size} metrics to SignalFX"
+      log "debug", "Sent #{datapoints.size} metrics to SignalFX"
       log "debug", "Response is: #{response}"
     end
 
@@ -68,25 +68,12 @@ module MetriksAddons
           gauge |= create_datapoints name, metric, time, [
             :value
           ]
-        when Metriks::UtilizationTimer
+        when Metriks::Timer
           counter |= create_datapoints name, metric, time, [
-            :count, :mean_rate, :min, :max, :mean, :stddev, 
-            :mean_utilization
-          ], [
-            :median
+            :count
           ]
-
-          when Metriks::Timer
-          counter |= create_datapoints name, metric, time, [
-            :count, :mean_rate, :min, :max, :mean, :stddev
-          ], [
-            :median
-          ]
-          when Metriks::Histogram
-          counter |= create_datapoints name, metric, time, [
-            :count, :min, :max, :mean, :stddev
-          ], [
-            :median
+          gauge |= create_datapoints name, metric, time, [
+            :min, :max, :mean
           ]
         end
       end
