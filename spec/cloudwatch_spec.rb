@@ -4,7 +4,7 @@ require 'metriks-addons/cloudwatch_reporter'
 
 describe "Smoke test" do
   before(:each) do
-    AWS::CloudWatch.any_instance.stub(:put_metric_data)
+    allow_any_instance_of(AWS::CloudWatch).to receive(:put_metric_data)
     @registry = Metriks::Registry.new
     @reporter = MetriksAddons::CloudWatchReporter.new(
       'DummyDummyDummyDummy',

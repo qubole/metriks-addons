@@ -1,7 +1,7 @@
 require 'metriks/time_tracker'
 require 'rest-client'
 require 'logger'
-require 'metriks-addons/base_reporter'
+require_relative 'base_reporter'
 
 module MetriksAddons
   class OpenTSDBReporter < BaseReporter

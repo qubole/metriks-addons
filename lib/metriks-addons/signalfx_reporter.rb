@@ -1,17 +1,15 @@
 require 'metriks/time_tracker'
-require 'rest-client'
 require 'logger'
-require 'metriks-addons/base_reporter'
+require 'signalfx'
+require_relative 'base_reporter'
 
 module MetriksAddons
   class SignalFxReporter < BaseReporter
-    attr_accessor :prefix, :source, :data, :hostname, :tags, :logger
+    attr_accessor :client, :prefix, :source, :data, :tags, :logger
 
-    def initialize(h, token, id, tags, options = {})
+    def initialize(token, tags, options = {})
       super(options)
-      @hostname = h
       @x_sf_token = token
-      @orgid = id
       @tags = tags
 
       @prefix = options[:prefix]
@@ -19,24 +17,14 @@ module MetriksAddons
 
       @batch_size   = options[:batch_size] || 50
 
-      if not @logger.nil?
-        RestClient.log =
-          Object.new.tap do |proxy|
-            def proxy.<<(message)
-              Rails.logger.debug message
-            end
-          end
-      end
+      @client = SignalFx.new @x_sf_token, batch_size: @batch_size
     end
 
     def submit(datapoints)
       return if datapoints.empty?
 
-      jsonstr = datapoints.to_json
-      log "debug", "Json for SignalFx: #{jsonstr}"
-      response  = RestClient.post "#{@hostname}?orgid=#{@orgid}",
-						        jsonstr,
-						        :content_type => :json, :accept => :json, :'X-SF-TOKEN' => @x_sf_token
+      log "debug", "Datapoints for SignalFx: #{datapoints.inspect}"
+      response = @client.send(counters: datapoints[:counters], gauges: datapoints[:gauges])
       log "debug", "Sent #{datapoints.size} metrics to SignalFX"
       log "debug", "Response is: #{response}"
     end
@@ -58,7 +46,7 @@ module MetriksAddons
         case metric
         when Metriks::Meter
           counter |= create_datapoints name, metric, time, [
-            :count, :mean_rate
+            :count
           ]
         when Metriks::Counter
           counter |= create_datapoints name, metric, time, [
@@ -78,9 +66,8 @@ module MetriksAddons
         end
       end
 
-      datapoints[:counter] = counter if counter.any?
-      datapoints[:gauge] = gauge if gauge.any?
-
+      datapoints[:counters] = counter if counter.any?
+      datapoints[:gauges] = gauge if gauge.any?
       datapoints
     end
 
