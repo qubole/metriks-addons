@@ -48,7 +48,8 @@ Gem::Specification.new do |s|
   ## that are needed for an end user to actually USE your code.
   s.add_runtime_dependency 'metriks', '~> 0.9', '>= 0.9.9.7'
   s.add_runtime_dependency 'rest-client', '>= 1.6.7'
-
+  s.add_runtime_dependency 'signalfx', '>= 0.1.0'
+  
   ## List your development dependencies here. Development dependencies are
   ## those that are only needed during development
   s.add_development_dependency('mocha', ['~> 0.10'])
