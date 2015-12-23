@@ -12,7 +12,7 @@ Reporters are available for OpenTSDB, SignalFX and AWS Cloudwatch.
 The design is heavily inspired by
 [Librato Reporter] (https://github.com/eric/metriks-librato_metrics)
 
-## OpenTSDBReporter
+### OpenTSDBReporter
 
 ``` ruby
   reporter = Metriks::OpenTSDBReporter.new(host, tags, options)
@@ -22,7 +22,7 @@ The design is heavily inspired by
 2. tags: A hash of tags that should be associated with every metric.
 3. options: A hash to control behavior of the reporter. Valid options are:
 
-## SignalFXReporter
+### SignalFXReporter
 
 ``` ruby
   reporter = Metriks::SignalFXReporter.new(token, tags, options = {})
@@ -32,7 +32,7 @@ The design is heavily inspired by
 1. token: Token provided by SignalFX
 2. tags: A hash of tags that should be associated with every metric.
 
-## CloudWatchReporter
+### CloudWatchReporter
 
 ``` ruby
   reporter = Metriks::CloudWatchReporter.new((access_key, secret_key, namespace, tags, options = {}))
@@ -44,7 +44,7 @@ The design is heavily inspired by
 3. namespace: AWS CloudWatch namespace of the metric
 4. tags: A hash of tags that should be associated with every metric.
 
-## Options
+### Options
 
 All reporters accept a hash of options. Options are used to control the behavior
 of the reporter.
