@@ -64,7 +64,7 @@ module MetriksAddons
             :count
           ]
         when Metriks::Counter
-          counter |= create_datapoints name, metric, time, [
+          gauge |= create_datapoints name, metric, time, [
             :count
           ]
         when Metriks::Gauge

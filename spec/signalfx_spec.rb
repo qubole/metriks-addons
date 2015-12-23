@@ -48,11 +48,11 @@ describe "Smoke test" do
   it "counters" do
     @registry.counter('counter.testing').increment
     datapoints = @reporter.get_datapoints
-    expect(datapoints[:counters].size).to eql(1)
-    expect(datapoints[:counters][0][:metric]).to eql("counter.testing.count")
-    expect(datapoints[:counters][0][:value]).to eql(1)
-    expect(datapoints[:counters][0][:dimensions]).to include(:env => "test")
-    expect(datapoints[:counters][0][:timestamp]).not_to be_nil
+    expect(datapoints[:gauges].size).to eql(1)
+    expect(datapoints[:gauges][0][:metric]).to eql("counter.testing.count")
+    expect(datapoints[:gauges][0][:value]).to eql(1)
+    expect(datapoints[:gauges][0][:dimensions]).to include(:env => "test")
+    expect(datapoints[:gauges][0][:timestamp]).not_to be_nil
   end
 
   it "timer" do
