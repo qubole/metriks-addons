@@ -50,7 +50,7 @@ All reporters accept a hash of options. Options are used to control the behavior
 of the reporter.
 
 | Option | Description (Default)|
-------------------------
+---------|----------------------|
 | prefix | Add a prefix to the metric name ()|
 | batch_size | Number of metrics to report in a API call (50)|
 | logger | Logger for debug and info messages (nil) |
