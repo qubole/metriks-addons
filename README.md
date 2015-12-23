@@ -1,6 +1,6 @@
 # Metriks reporter for OpenTSDB
 
-[![Build Status](https://travis-ci.org/vrajat/metriks-addons.svg)](https://travis-ci.org/vrajat/metriks-addons)
+[![Build Status](https://travis-ci.org/qubole/metriks-addons.svg)](https://travis-ci.org/qubole/metriks-addons)
 
 This is the [metriks](https://github.com/eric/metriks) reporter for
 OpenTSDB and SignalFX.
@@ -18,9 +18,3 @@ Sends metrics to OpenTSDB every 60 seconds.
 1. host: hostname of OpenTSDB
 2. port: port on which OpenTSDB
 3. tags: A hash of tags that should be associated with every metric.
-
-# License
-
-Copyright (c) 2015 Rajat Venkatesh
-
-Published under the Apache 2.0 License, see LICENSE
