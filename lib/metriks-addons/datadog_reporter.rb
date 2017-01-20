@@ -56,7 +56,8 @@ module MetriksAddons
     end
 
     def get_datapoints
-      time = @time_tracker.now_floored
+      seconds = @time_tracker.now_floored
+      time = Time.at(seconds)
 
       datapoints = {}
       counter = {}
@@ -104,7 +105,7 @@ module MetriksAddons
         name = key.to_s.gsub(/^get_/, '')
         metric_name = "#{base_name}.#{name}"
         value = metric.send(key)
-        datapoints[metric_name] = [[time*1000, value]]
+        datapoints[metric_name] = [[time, value]]
       end
 
       unless snapshot_keys.empty?
@@ -113,7 +114,7 @@ module MetriksAddons
           name = key.to_s.gsub(/^get_/, '')
           metric_name = "#{base_name}.#{name}"
           value = snapshot.send(key)
-          datapoints[metric_name] = [[time*1000, value]]
+          datapoints[metric_name] = [[time, value]]
         end
       end
       datapoints
