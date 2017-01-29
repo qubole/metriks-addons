@@ -29,7 +29,6 @@ module MetriksAddons
 
       @prefix = options[:prefix]
       @client = Dogapi::Client.new(key)
-      @client.add_tags(host_name, @tags)
     end
 
     def submit(datapoints)
@@ -43,9 +42,9 @@ module MetriksAddons
           data.each do |metric_name, points|
             size[type] += points.size
             if type == 'counter'
-              @client.emit_points(metric_name, points, :type => 'counter')
+              @client.emit_points(metric_name, points, :type => 'counter', :tags => @tags)
             else
-              @client.emit_points(metric_name, points)
+              @client.emit_points(metric_name, points, :tags => @tags)
             end
           end
         end
