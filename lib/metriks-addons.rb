@@ -16,7 +16,8 @@
 require_relative 'metriks-addons/opentsdb_reporter'
 require_relative 'metriks-addons/signalfx_reporter'
 require_relative 'metriks-addons/cloudwatch_reporter'
+require_relative 'metriks-addons/datadog_reporter'
 
 module MetriksAddons
-  VERSION = '3.1.4'
+  VERSION = '3.2.0'
 end

@@ -16,6 +16,10 @@
 source 'https://rubygems.org'
 
 gemspec
+
+gem 'activesupport', '~> 4.2.7' if RUBY_VERSION < '2.2.0'
+gem 'signalfx', '~> 0.1.0' if RUBY_VERSION < '2.2.0'
+
 group :test do
   gem "rake"
   gem "rspec"

@@ -28,13 +28,13 @@ Gem::Specification.new do |s|
   ## If your rubyforge_project name is different, then edit it and comment out
   ## the sub! line in the Rakefile
   s.name              = 'metriks-addons'
-  s.version           = '3.1.4'
+  s.version           = '3.2.0'
   s.date              = '2015-12-28'
 
   ## Make sure your summary is short. The description may be as long
   ## as you like.
   s.summary     = "Reporters for Metriks."
-  s.description = "OpenTSDB and SignalFX reporter for Metriks."
+  s.description = "OpenTSDB, SignalFX and DatadogApi reporter for Metriks."
 
   ## List the primary authors. If there are a bunch of authors, it's probably
   ## better to set the email to an email list or something. If you don't have
@@ -64,6 +64,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'metriks', '~> 0.9', '>= 0.9.9.7'
   s.add_runtime_dependency 'rest-client', '>= 1.6.7'
   s.add_runtime_dependency 'signalfx', '>= 0.1.0'
+  s.add_runtime_dependency 'dogapi', '1.23.0'
 
   ## List your development dependencies here. Development dependencies are
   ## those that are only needed during development
@@ -84,6 +85,7 @@ Gem::Specification.new do |s|
     lib/metriks-addons/cloudwatch_reporter.rb
     lib/metriks-addons/opentsdb_reporter.rb
     lib/metriks-addons/signalfx_reporter.rb
+    lib/metriks-addons/datadog_reporter.rb
     metriks-addons.gemspec
     spec/cloudwatch_spec.rb
     spec/opentsdb_spec.rb
