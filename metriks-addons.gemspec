@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
   ## the sub! line in the Rakefile
   s.name              = 'metriks-addons'
   s.version           = '3.2.0'
-  s.date              = '2015-12-28'
+  s.date              = '2017-01-30'
 
   ## Make sure your summary is short. The description may be as long
   ## as you like.
@@ -83,11 +83,12 @@ Gem::Specification.new do |s|
     lib/metriks-addons.rb
     lib/metriks-addons/base_reporter.rb
     lib/metriks-addons/cloudwatch_reporter.rb
+    lib/metriks-addons/datadog_reporter.rb
     lib/metriks-addons/opentsdb_reporter.rb
     lib/metriks-addons/signalfx_reporter.rb
-    lib/metriks-addons/datadog_reporter.rb
     metriks-addons.gemspec
     spec/cloudwatch_spec.rb
+    spec/datadog_api_spec.rb
     spec/opentsdb_spec.rb
     spec/signalfx_spec.rb
   ]
